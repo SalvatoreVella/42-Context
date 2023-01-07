@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import TodoList from "./TodoList";
+import { LanguageContext } from "./LanguageContext"
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  state = {
+    language: "en",
+  }
+
+  handleContext = (event) => {
+    this.setState(() => {
+        return {language: event.target.value}
+    })
+
+}
+
+  render() {
+    return (
+      <div>
+      <select value={this.state.language} onChange={this.handleContext}>
+      <option value={"en"}>EN</option>
+      <option value={"it"}>IT</option>
+  </select>
+      <LanguageContext.Provider value={this.state.language}>
+        <TodoList render={(items, handleDeleteTodo) => {
+          console.log(items);
+          return (
+          <ul>
+            {items.map((item) => {
+                return (
+                        <li key={item.key}>{item.description} <span>{item.done ? "Completato" : ""}</span> <button id={item.key} onClick={handleDeleteTodo}>Delete Todo</button></li>
+                )
+            })}
+        </ul>)
+        }}></TodoList>
+      </LanguageContext.Provider>
+      </div>
+    );
+  }
 }
 
 export default App;
